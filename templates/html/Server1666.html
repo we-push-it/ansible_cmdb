@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Server Information</title>
+    <script src="../js/jquery.min.js"></script>
+    <style>
+        body {
+            background-color: #010409;
+            color: #e6edf3;
+            padding: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            border-spacing: 0;
+            /*border: 1px solid #30363d;*/
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+
+        th, td {
+            border: 1px solid #30363d;
+            text-align: left;
+            padding: 10px;
+        }
+
+        th {
+            background-color: #0d1117;
+            font-weight: bold;
+            cursor: pointer;
+            position: relative;
+            min-width: 175px;
+        }
+
+        td {
+            word-break: break-all;
+        }
+
+        body {
+            background-color: #010409;
+            color: #e6edf3;
+            padding: 20px;
+        }
+
+        a {
+            color: #00bfff;
+            transition: color 0.2s ease;
+        }
+
+        a:hover {
+            color: #007acc;
+        }
+
+        table {
+            width: 100%;
+        }
+
+        #serverName {
+            margin-bottom: 10px;
+        }
+
+
+    </style>
+</head>
+<body>
+<div id="app">
+    <h1 id="serverName"></h1>
+    <a href="test.html">Zurück</a>
+
+    <table>
+        <tbody id="dataBody">
+        </tbody>
+    </table>
+</div>
+
+<script>
+
+    var jsonData =
+        {
+            "Hostname": "Server1666",
+            "IP": "236.224.158.115",
+            "Distribution": "Debian",
+            "Major Version": 6,
+            "Ansprechpartner": "John Doe",
+            "CPU": "16",
+            "Groups": [
+                "mysql",
+                "backup",
+                "maintenance"
+            ],
+            "Stage": "DEV"
+        };
+
+    $(document).ready(function () {
+        $('#serverName').html(jsonData.Hostname + ' Details');
+
+
+        var tableBody = $('#dataBody');
+        tableBody.empty();
+        $.each(jsonData, function (index, item) {
+            var row = '<tr>';
+
+            row += '<td>' + index + '</td>';
+            row += '<td>' + item + '</td>';
+
+            row += '</tr>';
+            tableBody.append(row);
+        });
+
+    });
+</script>
+</body>
+</html>
