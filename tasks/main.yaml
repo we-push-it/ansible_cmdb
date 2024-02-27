@@ -8,7 +8,7 @@
     group: "{{ ansible_cmdb_webserver_group }}"
     mode: "{{ ansible_cmdb_webserver_mode_folder }}"
   become: true
-  when: ansible_host == "localhost"
+  when: ansible_host == ansible_cmdb_webserver_hostname
   delegate_to: "{{ ansible_cmdb_webserver_hostname }}"
 
 - name: "Copy SVG files to Webserver"
@@ -19,7 +19,7 @@
     group: "{{ ansible_cmdb_webserver_group }}"
     mode: "{{ ansible_cmdb_webserver_mode_folder }}"
   become: true
-  when: ansible_host == "localhost"
+  when: ansible_host == ansible_cmdb_webserver_hostname
   delegate_to: "{{ ansible_cmdb_webserver_hostname }}"
 
 
@@ -37,7 +37,7 @@
     owner: "{{ ansible_cmdb_webserver_owner }}"
     group: "{{ ansible_cmdb_webserver_group }}"
     mode: "{{ ansible_cmdb_webserver_mode_folder }}"
-  when: ansible_host == "localhost"
+  when: ansible_host == ansible_cmdb_webserver_hostname
   delegate_to: "{{ ansible_cmdb_webserver_hostname }}"
   become: true
 
@@ -60,7 +60,7 @@
   ansible.builtin.command:
     cmd: "cat {{ ansible_cmdb_server_json_path }}/*.json"
   register: ansible_cmdb_all_servers_json
-  when: ansible_host == "localhost"
+  when: ansible_host == ansible_cmdb_webserver_hostname
   delegate_to: "{{ ansible_cmdb_webserver_hostname }}"
   become: true
 
@@ -72,5 +72,5 @@
     group: "{{ ansible_cmdb_webserver_group }}"
     mode: "{{ ansible_cmdb_webserver_mode_files }}"
   delegate_to: "{{ ansible_cmdb_webserver_hostname }}"
-  when: ansible_host == "localhost"
+  when: ansible_host == ansible_cmdb_webserver_hostname
 
