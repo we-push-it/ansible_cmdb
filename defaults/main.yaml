@@ -1,0 +1,29 @@
+---
+ansible_cmdb_webserver_hostname: localhost  # used to delegate the tasks
+ansible_cmdb_webserver_path: /var/www/pub/cmdb
+
+ansible_cmdb_webserver_owner: www-data
+ansible_cmdb_webserver_group: www-data
+ansible_cmdb_webserver_mode_files: '0644'
+ansible_cmdb_webserver_mode_folder: '0755'
+
+ansible_cmdb_server_json_path: "{{ ansible_cmdb_webserver_path }}/json"
+
+# reports
+ansible_cmdb_report_sysinfos: true
+
+
+# styling and settings
+
+ansible_cmdb_columns:
+  - Hostname
+  - IP
+  - Distribution
+  - Major Version
+  - Contact Person
+  - CPU
+  - Groups
+  - Stage
+
+ansible_cmdb_css_background_color: "#010409"
+ansible_cmdb_css_font_color: "#e6edf3"

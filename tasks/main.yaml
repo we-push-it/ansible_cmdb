@@ -1,0 +1,76 @@
+---
+
+- name: "Copy JS files to Webserver"
+  ansible.builtin.copy:
+    src: ../templates/js/
+    dest: "{{ ansible_cmdb_webserver_path }}/js/"
+    owner: "{{ ansible_cmdb_webserver_owner }}"
+    group: "{{ ansible_cmdb_webserver_group }}"
+    mode: "{{ ansible_cmdb_webserver_mode_folder }}"
+  become: true
+  when: ansible_host == "localhost"
+  delegate_to: "{{ ansible_cmdb_webserver_hostname }}"
+
+- name: "Copy SVG files to Webserver"
+  ansible.builtin.copy:
+    src: ../templates/svg/
+    dest: "{{ ansible_cmdb_webserver_path }}/svg/"
+    owner: "{{ ansible_cmdb_webserver_owner }}"
+    group: "{{ ansible_cmdb_webserver_group }}"
+    mode: "{{ ansible_cmdb_webserver_mode_folder }}"
+  become: true
+  when: ansible_host == "localhost"
+  delegate_to: "{{ ansible_cmdb_webserver_hostname }}"
+
+
+# TODO: Change to loop for all reports in a directory
+# TODO: Reformat JSON to simple structure and remove unnecessary items
+- name: "Get sysinfos"
+  ansible.builtin.set_fact:
+    ansible_cmdb_report: "{{ ansible_cmdb_report | default([]) + ansible_facts | dict2items }}"
+  when: ansible_cmdb_report_sysinfos
+
+- name: "Create json path"
+  ansible.builtin.file:
+    path: "{{ ansible_cmdb_server_json_path }}"
+    state: directory
+    owner: "{{ ansible_cmdb_webserver_owner }}"
+    group: "{{ ansible_cmdb_webserver_group }}"
+    mode: "{{ ansible_cmdb_webserver_mode_folder }}"
+  when: ansible_host == "localhost"
+  delegate_to: "{{ ansible_cmdb_webserver_hostname }}"
+  become: true
+
+- name: "Copy Json file to Webserver"
+  ansible.builtin.copy:
+    content: "{{ ansible_cmdb_report | to_json }}"
+    dest: "{{ ansible_cmdb_server_json_path }}/{{ inventory_hostname }}.json"
+    owner: "{{ ansible_cmdb_webserver_owner }}"
+    group: "{{ ansible_cmdb_webserver_group }}"
+    mode: "{{ ansible_cmdb_webserver_mode_files }}"
+  delegate_to: "{{ ansible_cmdb_webserver_hostname }}"
+  become: true
+
+
+# TODO: delete files from json dir, older x days to avoid
+# having not existing servers in the list which are removed
+# from inventory
+
+- name: "Gather and merge json Files"
+  ansible.builtin.command:
+    cmd: "cat {{ ansible_cmdb_server_json_path }}/*.json"
+  register: ansible_cmdb_all_servers_json
+  when: ansible_host == "localhost"
+  delegate_to: "{{ ansible_cmdb_webserver_hostname }}"
+  become: true
+
+- name: "Copy index html"
+  ansible.builtin.template:
+    src: ../templates/html/index.html
+    dest: "{{ ansible_cmdb_webserver_path }}/index.html"
+    owner: "{{ ansible_cmdb_webserver_owner }}"
+    group: "{{ ansible_cmdb_webserver_group }}"
+    mode: "{{ ansible_cmdb_webserver_mode_files }}"
+  delegate_to: "{{ ansible_cmdb_webserver_hostname }}"
+  when: ansible_host == "localhost"
+
