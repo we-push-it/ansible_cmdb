@@ -24134,7 +24134,7 @@
                 let keys = Object.keys(item);
                 keys.forEach(function (key) {
                     if (key === 'Distribution') {
-                        let distri = '<div style="display: flex; align-items: center;"><span class="value">' + item.Distribution + '</span><div style="width: 100%; max-width: 80px;text-align: center"><img class="distri-logo" alt="' + item.Distribution + '" src="' + item.Distribution + '.svg" /></div></div>'
+                        let distri = '<div style="display: flex; align-items: center;"><span class="value">' + item.Distribution + '</span><div style="width: 100%; max-width: 80px;text-align: center"><img class="distri-logo" alt="' + item.Distribution + '" src="../svg/' + item.Distribution + '.svg" /></div></div>'
                         row += '<td>' + distri + '</td>'
                     } else if (key === 'Groups') {
                         var groups = item.Groups.join(', ');
