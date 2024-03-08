@@ -57,9 +57,10 @@
 # from inventory
 
 - name: "Gather and merge json Files"
-  ansible.builtin.command:
-    cmd: "cat {{ ansible_cmdb_server_json_path }}/*.json"
-  register: ansible_cmdb_all_servers_json
+  ansible.builtin.assemble:
+    src: "{{ ansible_cmdb_server_json_path }}"
+    dest: "{{ ansible_cmdb_webserver_path }}/all.json"
+    delimiter: ","
   when: ansible_host == ansible_cmdb_webserver_hostname
   delegate_to: "{{ ansible_cmdb_webserver_hostname }}"
   become: true
@@ -73,4 +74,4 @@
     mode: "{{ ansible_cmdb_webserver_mode_files }}"
   delegate_to: "{{ ansible_cmdb_webserver_hostname }}"
   when: ansible_host == ansible_cmdb_webserver_hostname
-
+  become: true
