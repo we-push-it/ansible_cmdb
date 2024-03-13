@@ -3,11 +3,28 @@
 - name: "Report: hallo_welt"
   ansible.builtin.shell:
     cmd: "echo 'hallo welt'"
-  register: ansible_cmdb_report_tmp_hallo_welt
+  register: ansible_cmdb_report_tmp_hallo_welt_cmd
   when: ansible_cmdb_report_hallo_welt
+  ignore_errors: true
+
+- name: "Report: hallo_welt out"
+  ansible.builtin.set_fact:
+    ansible_cmdb_report_tmp_hallo_welt:
+      - hallo_welt: "{{ ansible_cmdb_report_tmp_hallo_welt_cmd.stdout }}"
+  when:
+    - ansible_cmdb_report_hallo_welt
+    - ansible_cmdb_report_tmp_hallo_welt_cmd.stdout is defined
+
+- name: "Report: hallo_welt out (not reachable)"
+  ansible.builtin.set_fact:
+    ansible_cmdb_report_tmp_hallo_welt:
+      - hallo_welt: "not reachable"
+  when:
+    - ansible_cmdb_report_hallo_welt
+    - ansible_cmdb_report_tmp_hallo_welt_cmd.stdout is not defined
 
 - name: "Report: hallo_welt out"
   ansible.builtin.set_fact:
     ansible_cmdb_report_output_hallo_welt:
-      - hallo_welt: "{{ ansible_cmdb_report_tmp_hallo_welt.stdout }}"
+      - hallo_welt: "{{ ansible_cmdb_report_tmp_hallo_welt }}"
   when: ansible_cmdb_report_hallo_welt

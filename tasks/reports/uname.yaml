@@ -3,14 +3,25 @@
 - name: "Report: uname"
   ansible.builtin.shell:
     cmd: "uname -a"
-  register: ansible_cmdb_report_tmp_uname
+  register: ansible_cmdb_report_tmp_uname_cmd
   when: ansible_cmdb_report_uname
+  ignore_errors: true
 
 - name: "Report: uname out"
   ansible.builtin.set_fact:
     ansible_cmdb_report_tmp_uname:
-      - uname: "{{ ansible_cmdb_report_tmp_uname.stdout }}"
-  when: ansible_cmdb_report_uname
+      - uname: "{{ ansible_cmdb_report_tmp_uname_cmd.stdout }}"
+  when:
+    - ansible_cmdb_report_uname
+    - ansible_cmdb_report_tmp_uname_cmd.stdout is defined
+
+- name: "Report: uname out (not reachable)"
+  ansible.builtin.set_fact:
+    ansible_cmdb_report_tmp_uname:
+      - uname: "not reachable"
+  when:
+    - ansible_cmdb_report_uname
+    - ansible_cmdb_report_tmp_uname_cmd.stdout is not defined
 
 - name: "Report: uname out"
   ansible.builtin.set_fact:
