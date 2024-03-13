@@ -1,0 +1,24 @@
+---
+- name: "Report: sysinfo SKIP"
+  ansible.builtin.set_fact:
+    ansible_cmdb_report_tmp_sysinfo:
+      - hostname: "{{ ansible_facts.hostname }}"
+        ip: "{{ hostvars[inventory_hostname]['ansible_host'] }}"
+        load: "{{ ansible_facts.loadavg }}"
+        distribution: "{{ ansible_facts.distribution }}"
+        distribution_icon: "{{ ansible_facts.distribution | lower | regex_replace(' ', '') }}"
+        os_family: "{{ ansible_facts.os_family }}"
+        major_release: "{{ ansible_facts.distribution_major_version }}"
+        processor_cores: "{{ ansible_facts.processor_cores }}"
+        memory: "{{ ansible_facts.memtotal_mb }}"
+        interfaces: "{{ ansible_facts.interfaces }}"
+        # facts: "{{ ansible_facts }}"
+  when: ansible_cmdb_report_sysinfo
+
+- name: "Report: sysinfo out"
+  ansible.builtin.set_fact:
+    ansible_cmdb_report_output_sysinfo:
+      - sysinfo: "{{ ansible_cmdb_report_tmp_sysinfo }}"
+  when: ansible_cmdb_report_sysinfo
+
+# ansible_cmdb_report_out_sysinfo: "{{ ansible_cmdb_report_out_sysinfo | default([]) + (ansible_facts | dict2items) }}"

@@ -10,22 +10,23 @@ ansible_cmdb_webserver_mode_folder: '0755'
 ansible_cmdb_server_json_path: "{{ ansible_cmdb_webserver_path }}/json"
 
 # reports
-ansible_cmdb_report_sysinfos: true
-ansible_cmdb_report_hallo_welt: true
+ansible_cmdb_report_sysinfo: true
+ansible_cmdb_report_hallo_welt: false
 ansible_cmdb_report_uname: true
 
 
 # styling and settings
 
 ansible_cmdb_columns:
-  - Hostname
-  - IP
-  - Distribution
-  - Major Version
-  - Contact Person
-  - CPU
-  - Groups
-  - Stage
+  - sysinfo.hostname
+  - sysinfo.ip
+  - sysinfo.load
+  - sysinfo.distribution
+  # - sysinfo.os_family
+  - sysinfo.major_release
+  - sysinfo.processor_cores
+  - sysinfo.memory
+  - sysinfo.interfaces
 
 ansible_cmdb_css_background_color: "#010409"
 ansible_cmdb_css_font_color: "#e6edf3"

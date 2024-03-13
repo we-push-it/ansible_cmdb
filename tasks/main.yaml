@@ -30,8 +30,6 @@
 #     ansible_cmdb_report: "{{ ansible_cmdb_report | default([]) + ansible_facts | dict2items }}"
 #   when: ansible_cmdb_report_sysinfos
 
-
-
 - name: Include all tasks from all YAML files in the reports directory
   ansible.builtin.include_tasks: "{{ item }}"
   loop: "{{ query('ansible.builtin.fileglob', 'reports/*.yaml') }}"
@@ -39,6 +37,15 @@
     label: "{{ item }}"
 
 
+# - name: "Debugging output 1"
+#   ansible.builtin.debug:
+#     var: ansible_cmdb_report_output_sysinfo
+
+
+# - name: "Debugging output 2"
+#   ansible.builtin.debug:
+#     var: lookup('vars', item)
+#   loop: "{{ hostvars[inventory_hostname].keys() | select('match', '^ansible_cmdb_report_output_.*$') | list }}"
 
 - name: "Merging output"
   ansible.builtin.set_fact:

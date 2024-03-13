@@ -1,12 +1,12 @@
 ---
 
-- name: "Test Report"
+- name: "Report: hallo_welt"
   ansible.builtin.shell:
     cmd: "echo 'hallo welt'"
   register: ansible_cmdb_report_tmp_hallo_welt
   when: ansible_cmdb_report_hallo_welt
 
-- name: "Test Report stdout"
+- name: "Report: hallo_welt out"
   ansible.builtin.set_fact:
     ansible_cmdb_report_output_hallo_welt:
       - hallo_welt: "{{ ansible_cmdb_report_tmp_hallo_welt.stdout }}"
