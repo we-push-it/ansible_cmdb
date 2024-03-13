@@ -11,6 +11,8 @@ ansible_cmdb_server_json_path: "{{ ansible_cmdb_webserver_path }}/json"
 
 # reports
 ansible_cmdb_report_sysinfos: true
+ansible_cmdb_report_hallo_welt: true
+ansible_cmdb_report_uname: true
 
 
 # styling and settings

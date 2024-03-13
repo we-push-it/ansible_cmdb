@@ -67,8 +67,8 @@
 </head>
 <body>
 <div id="app">
-    <h1 id="serverName"></h1>
-    <a href="test.html">Zurück</a>
+    <h1>{{ inventory_hostname }}</h1>
+    <a href="../index.html">Zurück</a>
 
     <table>
         <tbody id="dataBody">
@@ -78,25 +78,9 @@
 
 <script>
 
-    var jsonData =
-        {
-            "Hostname": "Server1666",
-            "IP": "236.224.158.115",
-            "Distribution": "Debian",
-            "Major Version": 6,
-            "Ansprechpartner": "John Doe",
-            "CPU": "16",
-            "Groups": [
-                "mysql",
-                "backup",
-                "maintenance"
-            ],
-            "Stage": "DEV"
-        };
+    var jsonData = {{ ansible_cmdb_report | to_json }}
 
     $(document).ready(function () {
-        $('#serverName').html(jsonData.Hostname + ' Details');
-
 
         var tableBody = $('#dataBody');
         tableBody.empty();

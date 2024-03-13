@@ -1,0 +1,13 @@
+---
+
+- name: "Uname Report"
+  ansible.builtin.shell:
+    cmd: "uname -a"
+  register: ansible_cmdb_report_tmp_uname
+  when: ansible_cmdb_report_uname
+
+- name: "Uname Report stdout"
+  ansible.builtin.set_fact:
+    ansible_cmdb_report_output_uname:
+      - uname: "{{ ansible_cmdb_report_tmp_uname.stdout }}"
+  when: ansible_cmdb_report_uname

@@ -25,10 +25,26 @@
 
 # TODO: Change to loop for all reports in a directory
 # TODO: Reformat JSON to simple structure and remove unnecessary items
-- name: "Get sysinfos"
+# - name: "Get sysinfos"
+#   ansible.builtin.set_fact:
+#     ansible_cmdb_report: "{{ ansible_cmdb_report | default([]) + ansible_facts | dict2items }}"
+#   when: ansible_cmdb_report_sysinfos
+
+
+
+- name: Include all tasks from all YAML files in the reports directory
+  ansible.builtin.include_tasks: "{{ item }}"
+  loop: "{{ query('ansible.builtin.fileglob', 'reports/*.yaml') }}"
+  loop_control:
+    label: "{{ item }}"
+
+
+
+- name: "Merging output"
   ansible.builtin.set_fact:
-    ansible_cmdb_report: "{{ ansible_cmdb_report | default([]) + ansible_facts | dict2items }}"
-  when: ansible_cmdb_report_sysinfos
+    ansible_cmdb_report: "{{ ansible_cmdb_report | default([]) + lookup('vars', item) }}"
+  loop: "{{ hostvars[inventory_hostname].keys() | select('match', '^ansible_cmdb_report_output_.*$') | list }}"
+
 
 - name: "Create json path"
   ansible.builtin.file:
@@ -43,7 +59,7 @@
 
 - name: "Copy Json file to Webserver"
   ansible.builtin.copy:
-    content: "{{ ansible_cmdb_report | to_json }}"
+    content: "[{\"{{ ansible_hostname }}\":{{ ansible_cmdb_report | to_json }} }]"
     dest: "{{ ansible_cmdb_server_json_path }}/{{ inventory_hostname }}.json"
     owner: "{{ ansible_cmdb_webserver_owner }}"
     group: "{{ ansible_cmdb_webserver_group }}"
@@ -51,16 +67,45 @@
   delegate_to: "{{ ansible_cmdb_webserver_hostname }}"
   become: true
 
+- name: "Create server path"
+  ansible.builtin.file:
+    path: "{{ ansible_cmdb_webserver_path }}/servers"
+    state: directory
+    owner: "{{ ansible_cmdb_webserver_owner }}"
+    group: "{{ ansible_cmdb_webserver_group }}"
+    mode: "{{ ansible_cmdb_webserver_mode_folder }}"
+  when: ansible_host == ansible_cmdb_webserver_hostname
+  delegate_to: "{{ ansible_cmdb_webserver_hostname }}"
+  become: true
+
+- name: "Copy Server html to Webserver"
+  ansible.builtin.template:
+    src: ../templates/html/servers/server.html
+    dest: "{{ ansible_cmdb_webserver_path }}/servers/{{ inventory_hostname }}.html"
+    owner: "{{ ansible_cmdb_webserver_owner }}"
+    group: "{{ ansible_cmdb_webserver_group }}"
+    mode: "{{ ansible_cmdb_webserver_mode_files }}"
+  delegate_to: "{{ ansible_cmdb_webserver_hostname }}"
+  become: true
 
 # TODO: delete files from json dir, older x days to avoid
 # having not existing servers in the list which are removed
 # from inventory
 
 - name: "Gather and merge json Files"
-  ansible.builtin.assemble:
-    src: "{{ ansible_cmdb_server_json_path }}"
-    dest: "{{ ansible_cmdb_webserver_path }}/all.json"
-    delimiter: ","
+  ansible.builtin.shell:
+    cmd: |
+      set -o pipefail |
+      cat {{ ansible_cmdb_server_json_path }}/*.json |
+      jq -s add > {{ ansible_cmdb_webserver_path }}/all.json
+  when: ansible_host == ansible_cmdb_webserver_hostname
+  delegate_to: "{{ ansible_cmdb_webserver_hostname }}"
+  become: true
+
+- name: "Read all.json"
+  ansible.builtin.slurp:
+    src: "{{ ansible_cmdb_webserver_path }}/all.json"
+  register: ansible_cmdb_all_json
   when: ansible_host == ansible_cmdb_webserver_hostname
   delegate_to: "{{ ansible_cmdb_webserver_hostname }}"
   become: true
