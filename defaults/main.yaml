@@ -12,13 +12,14 @@ ansible_cmdb_server_json_path: "{{ ansible_cmdb_webserver_path }}/json"
 # reports
 ansible_cmdb_report_sysinfo: true
 ansible_cmdb_report_hallo_welt: false
-ansible_cmdb_report_uname: true
+ansible_cmdb_report_uname: false
 
 
 # styling and settings
 
 ansible_cmdb_columns:
   - sysinfo.hostname
+  - sysinfo.inventory_hostname
   - sysinfo.ip
   - sysinfo.load
   - sysinfo.distribution

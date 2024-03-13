@@ -1,8 +1,9 @@
 ---
-- name: "Report: sysinfo SKIP"
+- name: "Report: sysinfo"
   ansible.builtin.set_fact:
     ansible_cmdb_report_tmp_sysinfo:
       - hostname: "{{ ansible_facts.hostname }}"
+        inventory_hostname: "{{ inventory_hostname }}"
         ip: "{{ hostvars[inventory_hostname]['ansible_host'] }}"
         load: "{{ ansible_facts.loadavg }}"
         distribution: "{{ ansible_facts.distribution }}"
@@ -14,6 +15,27 @@
         interfaces: "{{ ansible_facts.interfaces }}"
         # facts: "{{ ansible_facts }}"
   when: ansible_cmdb_report_sysinfo
+  register: ansible_cmdb_report_task_sysinfo
+  ignore_errors: true
+
+- name: "Report: sysinfo (not reachable)"
+  ansible.builtin.set_fact:
+    ansible_cmdb_report_tmp_sysinfo:
+      - hostname: "{{ hostvars[inventory_hostname]['ansible_host'] }}"
+        inventory_hostname: "{{ inventory_hostname }}"
+        ip: "{{ hostvars[inventory_hostname]['ansible_host'] }}"
+        load: ""
+        distribution: ""
+        distribution_icon: ""
+        os_family: ""
+        major_release: ""
+        processor_cores: ""
+        memory: ""
+        interfaces: ""
+        # facts: "{{ ansible_facts }}"
+  when:
+    - ansible_cmdb_report_sysinfo
+    - ansible_cmdb_report_task_sysinfo.failed
 
 - name: "Report: sysinfo out"
   ansible.builtin.set_fact:

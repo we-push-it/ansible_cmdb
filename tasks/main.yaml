@@ -66,7 +66,7 @@
 
 - name: "Copy Json file to Webserver"
   ansible.builtin.copy:
-    content: "[{\"{{ ansible_hostname }}\":{{ ansible_cmdb_report | to_json }} }]"
+    content: "[{\"{{ inventory_hostname }}\":{{ ansible_cmdb_report | to_json }} }]"
     dest: "{{ ansible_cmdb_server_json_path }}/{{ inventory_hostname }}.json"
     owner: "{{ ansible_cmdb_webserver_owner }}"
     group: "{{ ansible_cmdb_webserver_group }}"
