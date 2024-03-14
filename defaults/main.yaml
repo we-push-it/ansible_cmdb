@@ -22,11 +22,11 @@ ansible_cmdb_report_uname: true
 ansible_cmdb_columns:
   - sysinfo.inventory_hostname
   - sysinfo.hostname
-  - sysinfo.distribution
-  - sysinfo.load
   - sysinfo.ip
-  # - sysinfo.os_family
+  - sysinfo.distribution
   - sysinfo.major_release
+  - sysinfo.load
+  # - sysinfo.os_family
   - sysinfo.processor_cores
   - sysinfo.memory
   - sysinfo.interfaces

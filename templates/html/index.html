@@ -331,36 +331,41 @@
             $.each(data, function (index, item) {
                 var row = '<tr>';
                 let keys = Object.keys(item);
-                item[keys[0]].forEach(function (item2) {
-                    let key2 = Object.keys(item2);
-                    item2[key2[0]].forEach(function (item3) {
-                        Object.keys(item3).forEach(function (key) {
-                            let test = '.' + key;
-                            if (enabled_columns.filter(i => i.includes(test)).length === 1) {
-                                if (key === 'distribution') {
-                                    let distri = '<div style="display: flex; align-items: center;"><span class="value">' + item3['distribution'] + '</span><div style="width: 100%; max-width: 80px;text-align: center"><img class="distri-logo" alt="' + item3['distribution_icon'] + '" src="svg/' + item3['distribution_icon'] + '.svg" /></div></div>'
-                                    row += '<td>' + distri + '</td>'
-                                } else if (key === 'inventory_hostname') {
-                                    row += '<td><a href="servers/' + item3[key] + '.html"</a>' + item3[key] + '</td>'
-                                } else if (Array.isArray(item3[key])) {
-                                    var item = item3[key].join(', ');
-                                    row += '<td>' + item + '</td>'
-                                } else if (isPlainObject((item3[key]))) {
-                                    let items = '';
-                                    Object.keys(item3[key]).forEach( function (key3) {
-                                        items += '<p>' + key3 + ': ' + item3[key][key3] + '</p>';
-                                    })
+
+                enabled_columns.forEach(function (column) {
+
+                    item[keys[0]].forEach(function (item2) {
+                        let key2 = Object.keys(item2);
+                        item2[key2[0]].forEach(function (item3) {
+                            Object.keys(item3).forEach(function (key) {
+                                let test = '.' + key;
+                                if (column.includes(test)) {
+                                    if (key === 'distribution') {
+                                        let distri = '<div style="display: flex; align-items: center;"><span class="value">' + item3['distribution'] + '</span><div style="width: 100%; max-width: 80px;text-align: center"><img class="distri-logo" alt="' + item3['distribution_icon'] + '" src="svg/' + item3['distribution_icon'] + '.svg" /></div></div>'
+                                        row += '<td>' + distri + '</td>'
+                                    } else if (key === 'inventory_hostname') {
+                                        row += '<td><a href="servers/' + item3[key] + '.html"</a>' + item3[key] + '</td>'
+                                    } else if (Array.isArray(item3[key])) {
+                                        var item = item3[key].join(', ');
+                                        row += '<td>' + item + '</td>'
+                                    } else if (isPlainObject((item3[key]))) {
+                                        let items = '';
+                                        Object.keys(item3[key]).forEach( function (key3) {
+                                            items += '<p>' + key3 + ': ' + item3[key][key3] + '</p>';
+                                        })
 
 
 
-                                    row += '<td>' + items + '</td>'
-                                } else {
-                                    row += '<td>' + item3[key] + '</td>'
+                                        row += '<td>' + items + '</td>'
+                                    } else {
+                                        row += '<td>' + item3[key] + '</td>'
+                                    }
                                 }
-                            }
-                        })
+                            })
+                        });
                     });
                 });
+
                 row += '</tr>';
                 tableBody.append(row);
             });
