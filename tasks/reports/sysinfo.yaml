@@ -2,8 +2,8 @@
 - name: "Report: sysinfo"
   ansible.builtin.set_fact:
     ansible_cmdb_report_tmp_sysinfo:
-      - hostname: "{{ ansible_facts.hostname }}"
-        inventory_hostname: "{{ inventory_hostname }}"
+      - inventory_hostname: "{{ inventory_hostname }}"
+        hostname: "{{ ansible_facts.hostname }}"
         ip: "{{ hostvars[inventory_hostname]['ansible_host'] }}"
         load: "{{ ansible_facts.loadavg }}"
         distribution: "{{ ansible_facts.distribution }}"
@@ -18,20 +18,20 @@
   register: ansible_cmdb_report_task_sysinfo
   ignore_errors: true
 
-- name: "Report: sysinfo (not reachable)"
+- name: "Report: sysinfo (unreachable)"
   ansible.builtin.set_fact:
     ansible_cmdb_report_tmp_sysinfo:
-      - hostname: "{{ hostvars[inventory_hostname]['ansible_host'] }}"
-        inventory_hostname: "{{ inventory_hostname }}"
+      - inventory_hostname: "{{ inventory_hostname }}"
+        hostname: "{{ hostvars[inventory_hostname]['ansible_host'] }}"
         ip: "{{ hostvars[inventory_hostname]['ansible_host'] }}"
-        load: ""
-        distribution: ""
-        distribution_icon: ""
-        os_family: ""
-        major_release: ""
-        processor_cores: ""
-        memory: ""
-        interfaces: ""
+        load: "unreachable"
+        distribution: "unreachable"
+        distribution_icon: "unreachable"
+        os_family: "unreachable"
+        major_release: "unreachable"
+        processor_cores: "unreachable"
+        memory: "unreachable"
+        interfaces: "unreachable"
         # facts: "{{ ansible_facts }}"
   when:
     - ansible_cmdb_report_sysinfo

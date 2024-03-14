@@ -30,9 +30,15 @@
 #     ansible_cmdb_report: "{{ ansible_cmdb_report | default([]) + ansible_facts | dict2items }}"
 #   when: ansible_cmdb_report_sysinfos
 
-- name: Include all tasks from all YAML files in the reports directory
+- name: Run reports
   ansible.builtin.include_tasks: "{{ item }}"
   loop: "{{ query('ansible.builtin.fileglob', 'reports/*.yaml') }}"
+  loop_control:
+    label: "{{ item }}"
+
+- name: Run custom reports
+  ansible.builtin.include_tasks: "{{ item }}"
+  loop: "{{ query('ansible.builtin.fileglob', 'reports/custom_reports/*.yaml') }}"
   loop_control:
     label: "{{ item }}"
 

@@ -1,0 +1,33 @@
+---
+- name: "Report: hostvars"
+  ansible.builtin.set_fact:
+    ansible_cmdb_report_tmp_hostvars:
+      - ansible_host: "{{ ansible_host| default('-not set-') }}"
+        stage: "{{ stage | default('-not set-') }}"
+        schedule: "{{ schedule | default('-not set-') }}"
+        group: "{{ group | default('-not set-') }}"
+        env: "{{ env | default('-not set-') }}"
+        host_collection: "{{ host_collection | default('-not set-') }}"
+        environment: "{{ environment | default('-not set-') }}"
+        department: "{{ department | default('-not set-') }}"
+        os: "{{ os | default('-not set-') }}"
+        contact: "{{ contact | default('-not set-') }}"
+  when: ansible_cmdb_report_hostvars
+  register: ansible_cmdb_report_task_hostvars
+  ignore_errors: true
+
+- name: "Report: hostvars (unreachable)"
+  ansible.builtin.set_fact:
+    ansible_cmdb_report_tmp_hostvars:
+      - hostvars: "{{ hostvars[inventory_hostname] }}"
+  when:
+    - ansible_cmdb_report_hostvars
+    - ansible_cmdb_report_task_hostvars.failed
+
+- name: "Report: hostvars out"
+  ansible.builtin.set_fact:
+    ansible_cmdb_report_output_hostvars:
+      - hostvars: "{{ ansible_cmdb_report_tmp_hostvars }}"
+  when: ansible_cmdb_report_hostvars
+
+# ansible_cmdb_report_out_hostvars: "{{ ansible_cmdb_report_out_hostvars | default([]) + (ansible_facts | dict2items) }}"

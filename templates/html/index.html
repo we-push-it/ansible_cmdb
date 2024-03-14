@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Server Information</title>
-    <script src="../js/jquery.min.js"></script>
+    <script src="js/jquery.min.js"></script>
     <style>
         body {
             background-color: #010409;
@@ -168,8 +168,6 @@
         }
 
 
-
-
     </style>
 </head>
 <body>
@@ -188,9 +186,10 @@
 
 <script>
 
-    var enabled_columns  = {{ ansible_cmdb_columns | to_json }}
+    let enabled_columns  = {{ ansible_cmdb_columns | to_json }}
 
-    var jsonData = {{ ansible_cmdb_all_json.content | b64decode }}
+    let jsonData = {{ ansible_cmdb_all_json.content | b64decode }}
+
 
     $(document).ready(function () {
         var originalData = [...jsonData];
@@ -263,18 +262,17 @@
 
         function renderHeader() {
             var keys = [];
-            var dkeys = ['Hostname', 'IP', 'Distribution', 'Major Version', 'Ansprechpartner', 'CPU', 'Groups', 'Stage'];
-            jsonData.forEach(function (item) {
-                Object.keys(item).forEach(function (key) {
-                    if (!keys.includes(key)) {
-                        keys.push(key);
-                    }
-                });
-            });
+
+
+
+            console.log(keys);
+
+
+
 
             var tableHeader = '<tr>';
-            keys.forEach(function (key) {
-                if (key === 'Distribution' || key === 'Major Version') {
+            enabled_columns.forEach(function (key) {
+                if (key === 'TODOsysinfo.distribution' || key === 'TODOsysinfo.major_release') {
                     tableHeader += '<th><div class="search-label"><label for="' + key + '">' + key + ':</label>' +
                         '<div class="sort-icons" data-column="' + key + '">' +
                         '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 10" class="sort-icon-asc">' +
@@ -333,25 +331,44 @@
             $.each(data, function (index, item) {
                 var row = '<tr>';
                 let keys = Object.keys(item);
-                keys.forEach(function (key) {
-                    if (key === 'Distribution') {
-                        let distri = '<div style="display: flex; align-items: center;"><span class="value">' + item.Distribution + '</span><div style="width: 100%; max-width: 80px;text-align: center"><img class="distri-logo" alt="' + item.Distribution + '" src="../svg/' + item.Distribution + '.svg" /></div></div>'
-                        row += '<td>' + distri + '</td>'
-                    } else if (key === 'Groups') {
-                        var groups = item.Groups.join(', ');
-                        row += '<td>' + groups + '</td>'
-                    }  else if (key === 'Hostname') {
-                        row += '<td><a href="servers/' + item[key] + '.html"</a>' + item[key] + '</td>'
-                    }  else if (item[key].isArray()) {
-                        var groups = item.Groups.join(', ');
-                        row += '<td>' + groups + '</td>'
-                    } else {
-                        row += '<td>' + item[key] + '</td>'
-                    }
+                item[keys[0]].forEach(function (item2) {
+                    let key2 = Object.keys(item2);
+                    item2[key2[0]].forEach(function (item3) {
+                        Object.keys(item3).forEach(function (key) {
+                            let test = '.' + key;
+                            if (enabled_columns.filter(i => i.includes(test)).length === 1) {
+                                if (key === 'distribution') {
+                                    let distri = '<div style="display: flex; align-items: center;"><span class="value">' + item3['distribution'] + '</span><div style="width: 100%; max-width: 80px;text-align: center"><img class="distri-logo" alt="' + item3['distribution_icon'] + '" src="svg/' + item3['distribution_icon'] + '.svg" /></div></div>'
+                                    row += '<td>' + distri + '</td>'
+                                } else if (key === 'inventory_hostname') {
+                                    row += '<td><a href="servers/' + item3[key] + '.html"</a>' + item3[key] + '</td>'
+                                } else if (Array.isArray(item3[key])) {
+                                    var item = item3[key].join(', ');
+                                    row += '<td>' + item + '</td>'
+                                } else if (isPlainObject((item3[key]))) {
+                                    let items = '';
+                                    Object.keys(item3[key]).forEach( function (key3) {
+                                        items += '<p>' + key3 + ': ' + item3[key][key3] + '</p>';
+                                    })
+
+
+
+                                    row += '<td>' + items + '</td>'
+                                } else {
+                                    row += '<td>' + item3[key] + '</td>'
+                                }
+                            }
+                        })
+                    });
                 });
                 row += '</tr>';
                 tableBody.append(row);
             });
+        }
+
+
+        function isPlainObject(value) {
+            return Object.prototype.toString.call(value) === '[object Object]';
         }
 
         function updateSortColumns(column, sortOrder) {
@@ -395,7 +412,6 @@
             $('input').each(function () {
                 var searchText = $(this).val().toLowerCase();
                 var column = $(this).attr('id');
-
                 if (searchText !== '') filter.push({column, searchText})
             })
 
@@ -411,27 +427,51 @@
 
             let data = originalData.length === filteredData.length ? filteredData : [...originalData];
 
-            filteredData = data.filter(function (item1) {
+
+            filteredData = data.filter(function (item) {
                 let doFilter = true;
-                filter.forEach(function (item2) {
 
-                    let searchValue = item2.searchText;
-                    let columnContent = item1[item2.column];
+                let keys = Object.keys(item);
+                item[keys[0]].forEach(function (item2) {
+                    let key2 = Object.keys(item2);
+                    item2[key2[0]].forEach(function (item3) {
+                        Object.keys(item3).forEach(function (key) {
 
-                    // if (item2.column === 'Distribution') {
-                    //     const match = columnContent.toString().toLowerCase().match(/<span\s+class='value'>(.*?)<\/span>/);
-                    //     if (match) {
-                    //         columnContent = match[1];
-                    //     }
-                    // }
+                            filter.forEach(function (item2) {
 
-                    if (!columnContent.toString().toLowerCase().includes(searchValue)) {
-                        doFilter = false;
-                    }
-                })
+                                let searchValue = item2.searchText;
 
+
+
+
+                                let columnContent = item3[key];
+
+                                // if (item2.column === 'Distribution') {
+                                //     const match = columnContent.toString().toLowerCase().match(/<span\s+class='value'>(.*?)<\/span>/);
+                                //     if (match) {
+                                //         columnContent = match[1];
+                                //     }
+                                // }
+                                if (item2.column.includes('.' + key)) {
+                                    console.log(key)
+
+                                    if (Array.isArray(columnContent)) columnContent = columnContent.join(',');
+                                    console.log(columnContent)
+
+                                    console.log(searchValue)
+                                    if (!columnContent.toString().toLowerCase().includes(searchValue)) {
+                                        doFilter = false;
+                                    }
+                                }
+                            })
+
+                        })
+                    });
+                });
                 return doFilter;
+
             });
+
             var $paragraph = $('<p>' + filteredData.length + '</p>');
             $('#dataLength').html($paragraph);
 

@@ -4,7 +4,7 @@
   ansible.builtin.shell:
     cmd: |
       set -o pipefail
-      sshd -T | grep -i tries
+      sshd -T | grep -i tries | sed 's/maxauthtries //g'
     executable: /bin/bash
   register: ansible_cmdb_report_tmp_maxauthtries_cmd
   when: ansible_cmdb_report_maxauthtries
@@ -18,10 +18,10 @@
     - ansible_cmdb_report_maxauthtries
     - ansible_cmdb_report_tmp_maxauthtries_cmd.stdout is defined
 
-- name: "Report: maxauthtries out (not reachable)"
+- name: "Report: maxauthtries out (unreachable)"
   ansible.builtin.set_fact:
     ansible_cmdb_report_tmp_maxauthtries:
-      - maxauthtries: "not reachable"
+      - maxauthtries: "unreachable"
   when:
     - ansible_cmdb_report_maxauthtries
     - ansible_cmdb_report_tmp_maxauthtries_cmd.stdout is not defined

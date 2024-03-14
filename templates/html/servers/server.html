@@ -80,6 +80,7 @@
 
     var jsonData = {{ ansible_cmdb_report | to_json }}
 
+    {#
     $(document).ready(function () {
 
         var tableBody = $('#dataBody');
@@ -95,6 +96,31 @@
         });
 
     });
+    #}
+
+    $(document).ready(function () {
+        var tableBody = $('#dataBody');
+        tableBody.empty();
+        $.each(jsonData, function (index, item) {
+            // Gehe jedes Objekt in item durch (für den Fall, dass item ein Array von Objekten ist)
+            $.each(item, function(key, value) {
+                // Gehe jedes Schlüssel-Wert-Paar im Objekt durch
+                $.each(value[0], function(innerKey, innerValue) {
+                    var row = '<tr>';
+                    row += '<td>' + innerKey + '</td>'; // Der Schlüssel
+                    // Überprüfe, ob der Wert ein Objekt ist und wandle es in einen String um, falls ja
+                    if (typeof innerValue === 'object' && innerValue !== null) {
+                        row += '<td>' + JSON.stringify(innerValue) + '</td>';
+                    } else {
+                        row += '<td>' + innerValue + '</td>'; // Der Wert
+                    }
+                    row += '</tr>';
+                    tableBody.append(row);
+                });
+            });
+        });
+    });
+
 </script>
 </body>
 </html>

@@ -11,15 +11,17 @@ ansible_cmdb_server_json_path: "{{ ansible_cmdb_webserver_path }}/json"
 
 # reports
 ansible_cmdb_report_hallo_welt: true
+ansible_cmdb_report_hostvars: true
 ansible_cmdb_report_maxauthtries: true
 ansible_cmdb_report_sysinfo: true
+ansible_cmdb_report_tmout: true
 ansible_cmdb_report_uname: true
 
 # styling and settings
 
 ansible_cmdb_columns:
-  - sysinfo.hostname
   - sysinfo.inventory_hostname
+  - sysinfo.hostname
   - sysinfo.ip
   - sysinfo.load
   - sysinfo.distribution
@@ -28,6 +30,7 @@ ansible_cmdb_columns:
   - sysinfo.processor_cores
   - sysinfo.memory
   - sysinfo.interfaces
+  - tmout.tmout
 
 ansible_cmdb_css_background_color: "#010409"
 ansible_cmdb_css_font_color: "#e6edf3"

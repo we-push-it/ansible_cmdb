@@ -1,0 +1,33 @@
+---
+
+- name: "Report: tmout"
+  ansible.builtin.shell:
+    cmd: |
+      set -o pipefail
+      /bin/bash --login -c "echo \${TMOUT:-undefined}"
+    executable: /bin/bash
+  register: ansible_cmdb_report_tmp_tmout_cmd
+  when: ansible_cmdb_report_tmout
+  ignore_errors: true
+
+- name: "Report: tmout out"
+  ansible.builtin.set_fact:
+    ansible_cmdb_report_tmp_tmout:
+      - tmout: "{{ ansible_cmdb_report_tmp_tmout_cmd.stdout }}"
+  when:
+    - ansible_cmdb_report_tmout
+    - ansible_cmdb_report_tmp_tmout_cmd.stdout is defined
+
+- name: "Report: tmout out (unreachable)"
+  ansible.builtin.set_fact:
+    ansible_cmdb_report_tmp_tmout:
+      - tmout: "unreachable"
+  when:
+    - ansible_cmdb_report_tmout
+    - ansible_cmdb_report_tmp_tmout_cmd.stdout is not defined
+
+- name: "Report: tmout out"
+  ansible.builtin.set_fact:
+    ansible_cmdb_report_output_tmout:
+      - tmout: "{{ ansible_cmdb_report_tmp_tmout }}"
+  when: ansible_cmdb_report_tmout
