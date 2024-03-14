@@ -1,8 +1,8 @@
 ---
-- name: "Report: hostvars"
+- name: "hostvars | Report: hostvars"
   ansible.builtin.set_fact:
     ansible_cmdb_report_tmp_hostvars:
-      - ansible_host: "{{ ansible_host| default('-not set-') }}"
+      - ansible_host: "{{ ansible_host | default('-not set-') }}"
         stage: "{{ stage | default('-not set-') }}"
         schedule: "{{ schedule | default('-not set-') }}"
         group: "{{ group | default('-not set-') }}"
@@ -16,7 +16,7 @@
   register: ansible_cmdb_report_task_hostvars
   ignore_errors: true
 
-- name: "Report: hostvars (unreachable)"
+- name: "hostvars | Report: hostvars (unreachable)"
   ansible.builtin.set_fact:
     ansible_cmdb_report_tmp_hostvars:
       - hostvars: "{{ hostvars[inventory_hostname] }}"
@@ -24,7 +24,7 @@
     - ansible_cmdb_report_hostvars
     - ansible_cmdb_report_task_hostvars.failed
 
-- name: "Report: hostvars out"
+- name: "hostvars | Report: hostvars out"
   ansible.builtin.set_fact:
     ansible_cmdb_report_output_hostvars:
       - hostvars: "{{ ansible_cmdb_report_tmp_hostvars }}"

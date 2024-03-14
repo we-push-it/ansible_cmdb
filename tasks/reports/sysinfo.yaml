@@ -1,5 +1,5 @@
 ---
-- name: "Report: sysinfo"
+- name: "sysinfo | Report: sysinfo"
   ansible.builtin.set_fact:
     ansible_cmdb_report_tmp_sysinfo:
       - inventory_hostname: "{{ inventory_hostname }}"
@@ -18,7 +18,7 @@
   register: ansible_cmdb_report_task_sysinfo
   ignore_errors: true
 
-- name: "Report: sysinfo (unreachable)"
+- name: "sysinfo | Report: sysinfo (unreachable)"
   ansible.builtin.set_fact:
     ansible_cmdb_report_tmp_sysinfo:
       - inventory_hostname: "{{ inventory_hostname }}"
@@ -37,7 +37,7 @@
     - ansible_cmdb_report_sysinfo
     - ansible_cmdb_report_task_sysinfo.failed
 
-- name: "Report: sysinfo out"
+- name: "sysinfo | Report: sysinfo out"
   ansible.builtin.set_fact:
     ansible_cmdb_report_output_sysinfo:
       - sysinfo: "{{ ansible_cmdb_report_tmp_sysinfo }}"

@@ -1,0 +1,23 @@
+---
+extends: default
+
+# ignore:
+#   - /this/specific/file.yaml
+#   - all/this/directory/
+#   - '*.template.yaml'
+
+ignore: |
+  .git/
+  .github/
+  .vscode/
+
+rules:
+  # 200 chars should be enough, but don't fail if a line is longer
+  line-length:
+    max: 200
+    level: warning
+  comments-indentation: disable
+  braces:
+    forbid: false
+    min-spaces-inside: 0
+    max-spaces-inside: 1

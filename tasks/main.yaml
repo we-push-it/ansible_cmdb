@@ -93,7 +93,7 @@
 
 - name: "Copy Server html to Webserver"
   ansible.builtin.template:
-    src: ../templates/html/servers/server.html
+    src: ./html/servers/server.html
     dest: "{{ ansible_cmdb_webserver_path }}/servers/{{ inventory_hostname }}.html"
     owner: "{{ ansible_cmdb_webserver_owner }}"
     group: "{{ ansible_cmdb_webserver_group }}"
@@ -114,6 +114,7 @@
   when: ansible_host == ansible_cmdb_webserver_hostname
   delegate_to: "{{ ansible_cmdb_webserver_hostname }}"
   become: true
+  changed_when: true
 
 - name: "Read all.json"
   ansible.builtin.slurp:
@@ -125,7 +126,7 @@
 
 - name: "Copy index html"
   ansible.builtin.template:
-    src: ../templates/html/index.html
+    src: ./html/index.html
     dest: "{{ ansible_cmdb_webserver_path }}/index.html"
     owner: "{{ ansible_cmdb_webserver_owner }}"
     group: "{{ ansible_cmdb_webserver_group }}"

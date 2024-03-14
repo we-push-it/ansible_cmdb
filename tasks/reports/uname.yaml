@@ -1,13 +1,14 @@
 ---
 
-- name: "Report: uname"
-  ansible.builtin.shell:
+- name: "uname | Report: uname"
+  ansible.builtin.command:
     cmd: "uname -a"
   register: ansible_cmdb_report_tmp_uname_cmd
   when: ansible_cmdb_report_uname
   ignore_errors: true
+  changed_when: false
 
-- name: "Report: uname out"
+- name: "uname | Report: uname out"
   ansible.builtin.set_fact:
     ansible_cmdb_report_tmp_uname:
       - uname: "{{ ansible_cmdb_report_tmp_uname_cmd.stdout }}"
@@ -15,7 +16,7 @@
     - ansible_cmdb_report_uname
     - ansible_cmdb_report_tmp_uname_cmd.stdout is defined
 
-- name: "Report: uname out (unreachable)"
+- name: "uname | Report: uname out (unreachable)"
   ansible.builtin.set_fact:
     ansible_cmdb_report_tmp_uname:
       - uname: "unreachable"
@@ -23,7 +24,7 @@
     - ansible_cmdb_report_uname
     - ansible_cmdb_report_tmp_uname_cmd.stdout is not defined
 
-- name: "Report: uname out"
+- name: "uname | Report: uname out"
   ansible.builtin.set_fact:
     ansible_cmdb_report_output_uname:
       - uname: "{{ ansible_cmdb_report_tmp_uname }}"

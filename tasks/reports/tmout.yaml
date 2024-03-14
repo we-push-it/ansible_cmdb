@@ -1,6 +1,6 @@
 ---
 
-- name: "Report: tmout"
+- name: "tmout | Report: tmout"
   ansible.builtin.shell:
     cmd: |
       set -o pipefail
@@ -9,8 +9,9 @@
   register: ansible_cmdb_report_tmp_tmout_cmd
   when: ansible_cmdb_report_tmout
   ignore_errors: true
+  changed_when: false
 
-- name: "Report: tmout out"
+- name: "tmout | Report: tmout out"
   ansible.builtin.set_fact:
     ansible_cmdb_report_tmp_tmout:
       - tmout: "{{ ansible_cmdb_report_tmp_tmout_cmd.stdout }}"
@@ -18,7 +19,7 @@
     - ansible_cmdb_report_tmout
     - ansible_cmdb_report_tmp_tmout_cmd.stdout is defined
 
-- name: "Report: tmout out (unreachable)"
+- name: "tmout | Report: tmout out (unreachable)"
   ansible.builtin.set_fact:
     ansible_cmdb_report_tmp_tmout:
       - tmout: "unreachable"
@@ -26,7 +27,7 @@
     - ansible_cmdb_report_tmout
     - ansible_cmdb_report_tmp_tmout_cmd.stdout is not defined
 
-- name: "Report: tmout out"
+- name: "tmout | Report: tmout out"
   ansible.builtin.set_fact:
     ansible_cmdb_report_output_tmout:
       - tmout: "{{ ansible_cmdb_report_tmp_tmout }}"
