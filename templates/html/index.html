@@ -32,11 +32,11 @@
             font-weight: bold;
             cursor: pointer;
             position: relative;
-            min-width: 175px;
+            min-width: 185px;
         }
 
         td {
-            word-break: break-all;
+            word-break: normal;
         }
 
         .search-label {
@@ -84,9 +84,9 @@
         }
 
         .distri-logo {
-            max-height: 40px;
-            max-width: 60px;
-            margin-left: 20px;
+            max-height: 30px;
+            max-width: 50px;
+            margin-left: 15px;
         }
 
         input[type="text"] {
@@ -247,8 +247,7 @@
 
         $('.clear-icon-svg').on('click', function () {
             var input = $(this).closest('.search-wrapper').find('select');
-            console.log(input);
-            console.log(input.length);
+
             if (input.length === 1) {
                 input.val('').trigger('change');
             } else {
@@ -263,17 +262,10 @@
         function renderHeader() {
             var keys = [];
 
-
-
-            console.log(keys);
-
-
-
-
             var tableHeader = '<tr>';
             enabled_columns.forEach(function (key) {
                 if (key === 'TODOsysinfo.distribution' || key === 'TODOsysinfo.major_release') {
-                    tableHeader += '<th><div class="search-label"><label for="' + key + '">' + key + ':</label>' +
+                    tableHeader += '<th><div class="search-label"><label for="' + key + '">' + key.split('.')[1] + ':</label>' +
                         '<div class="sort-icons" data-column="' + key + '">' +
                         '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 10" class="sort-icon-asc">' +
                         '<path d="M1 8l5-5 5 5z"/>' +
@@ -300,7 +292,7 @@
                         '</div></th>';
                 } else {
                     tableHeader += '<th><div class="search-label">' +
-                        '<label for="' + key + '">' + key + ':</label>' +
+                        '<label for="' + key + '">' + key.split('.')[1] + ':</label>' +
                         '<div class="sort-icons" data-column="' + key + '">' +
                         '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 10" class="sort-icon-asc">' +
                         '<path d="M1 8l5-5 5 5z"/>' +
@@ -341,7 +333,7 @@
                                 let test = key2[0] + '.' + key;
                                 if (column === test) {
                                     if (key === 'distribution') {
-                                        let distri = '<div style="display: flex; align-items: center;"><span class="value">' + item3['distribution'] + '</span><div style="width: 100%; max-width: 80px;text-align: center"><img class="distri-logo" alt="' + item3['distribution_icon'] + '" src="svg/' + item3['distribution_icon'] + '.svg" /></div></div>'
+                                        let distri = '<div style="display: flex; align-items: center;"><div style="width: 100%; max-width: 65px;text-align: left"><img class="distri-logo" alt="' + item3['distribution_icon'] + '" src="svg/' + item3['distribution_icon'] + '.svg" /></div><span class="value">' + item3['distribution'] + '</span></div>'
                                         row += '<td>' + distri + '</td>'
                                     } else if (key === 'inventory_hostname') {
                                         row += '<td><a href="servers/' + item3[key] + '.html"</a>' + item3[key] + '</td>'
@@ -377,6 +369,7 @@
         }
 
         function updateSortColumns(column, sortOrder) {
+
             var existingSortIndex = currentSortColumns.findIndex(function (item) {
                 return item.column === column;
             });
@@ -390,27 +383,49 @@
             } else if (sortOrder !== '') {
                 currentSortColumns.push({column: column, order: sortOrder});
             }
+
         }
 
         function sortData(doRender = false) {
+
             filteredData.sort(function (a, b) {
-                for (var i = 0; i < currentSortColumns.length; i++) {
-                    var column = currentSortColumns[i].column;
-                    var order = currentSortColumns[i].order;
-                    var modifier = order === 'asc' ? 1 : -1;
-                    if (a[column] < b[column]) return -1 * modifier;
-                    if (a[column] > b[column]) return 1 * modifier;
+                for (let i = 0; i < currentSortColumns.length; i++) {
+                    const { column, order } = currentSortColumns[i];
+                    const modifier = order === 'asc' ? 1 : -1;
+
+                    let aValue = getNestedValue(a, column);
+                    let bValue = getNestedValue(b, column);
+
+                    if (aValue < bValue) return -1 * modifier;
+                    if (aValue > bValue) return 1 * modifier;
                 }
                 return 0;
             });
-
-            if (filteredData.length === originalData.length && currentSortColumns.length === 0) {
-                filteredData = [...originalData];
-            }
-
             if (doRender) renderBody(filteredData);
             else return filteredData;
         }
+
+        function getNestedValue(obj, column) {
+            let value = null;
+            Object.keys(obj).forEach(function (key) {
+                let module = Object.keys(obj[key])
+                module.forEach(function (key2) {
+
+                    let test = Object.keys(obj[key][key2]);
+                    test = test[0];
+
+                    if (test == column.split('.')[0]) {
+                        if (obj[key][key2][test][0][column.split('.')[1]]) {
+                            value = obj[key][key2][test][0][column.split('.')[1]];
+                        }
+                    }
+                })
+
+
+            })
+            return value;
+        }
+
 
         function filterData() {
             let filter = [];
@@ -428,10 +443,7 @@
                 if (searchText !== '' && searchText !== 'All') filter.push({column, searchText})
             })
 
-            console.log(filter);
-
             let data = originalData.length === filteredData.length ? filteredData : [...originalData];
-
 
             filteredData = data.filter(function (item) {
                 let doFilter = true;
@@ -445,9 +457,6 @@
                             filter.forEach(function (item2) {
 
                                 let searchValue = item2.searchText;
-
-
-
 
                                 let columnContent = item3[key];
 
