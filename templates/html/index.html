@@ -338,8 +338,8 @@
                         let key2 = Object.keys(item2);
                         item2[key2[0]].forEach(function (item3) {
                             Object.keys(item3).forEach(function (key) {
-                                let test = '.' + key;
-                                if (column.includes(test)) {
+                                let test = key2[0] + '.' + key;
+                                if (column === test) {
                                     if (key === 'distribution') {
                                         let distri = '<div style="display: flex; align-items: center;"><span class="value">' + item3['distribution'] + '</span><div style="width: 100%; max-width: 80px;text-align: center"><img class="distri-logo" alt="' + item3['distribution_icon'] + '" src="svg/' + item3['distribution_icon'] + '.svg" /></div></div>'
                                         row += '<td>' + distri + '</td>'
