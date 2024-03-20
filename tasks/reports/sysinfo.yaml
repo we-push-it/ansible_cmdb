@@ -42,5 +42,3 @@
     ansible_cmdb_report_output_sysinfo:
       - sysinfo: "{{ ansible_cmdb_report_tmp_sysinfo }}"
   when: ansible_cmdb_report_sysinfo
-
-# ansible_cmdb_report_out_sysinfo: "{{ ansible_cmdb_report_out_sysinfo | default([]) + (ansible_facts | dict2items) }}"
