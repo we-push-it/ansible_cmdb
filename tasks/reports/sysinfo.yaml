@@ -13,6 +13,7 @@
         processor_cores: "{{ ansible_facts.processor_cores }}"
         memory: "{{ ansible_facts.memtotal_mb }}"
         interfaces: "{{ ansible_facts.interfaces }}"
+        virtualization: "{{ ansible_virtualization_role | default('n/a') }}"
         # facts: "{{ ansible_facts }}"
   when: ansible_cmdb_report_sysinfo
   register: ansible_cmdb_report_task_sysinfo
@@ -32,6 +33,7 @@
         processor_cores: "unreachable"
         memory: "unreachable"
         interfaces: "unreachable"
+        virtualization: "unreachable"
         # facts: "{{ ansible_facts }}"
   when:
     - ansible_cmdb_report_sysinfo
