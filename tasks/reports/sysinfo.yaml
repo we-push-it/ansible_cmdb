@@ -14,6 +14,8 @@
         memory: "{{ ansible_facts.memtotal_mb }}"
         interfaces: "{{ ansible_facts.interfaces }}"
         virtualization: "{{ ansible_virtualization_role | default('n/a') }}"
+        last_update: "{{ ansible_facts.date_time.iso8601 }}"
+        last_update_timestamp: "{{ ansible_facts.date_time.epoch }}"
         # facts: "{{ ansible_facts }}"
   when: ansible_cmdb_report_sysinfo
   register: ansible_cmdb_report_task_sysinfo
@@ -34,6 +36,8 @@
         memory: "unreachable"
         interfaces: "unreachable"
         virtualization: "unreachable"
+        last_update: "unreachable"
+        last_update_timestamp: "unreachable"
         # facts: "{{ ansible_facts }}"
   when:
     - ansible_cmdb_report_sysinfo
