@@ -12,6 +12,7 @@
   ansible.builtin.set_fact:
     ansible_cmdb_report_tmp_uname:
       - uname: "{{ ansible_cmdb_report_tmp_uname_cmd.stdout }}"
+        kernel_version: "{{ ansible_kernel }}"
   when:
     - ansible_cmdb_report_uname
     - ansible_cmdb_report_tmp_uname_cmd.stdout is defined
@@ -20,6 +21,7 @@
   ansible.builtin.set_fact:
     ansible_cmdb_report_tmp_uname:
       - uname: "unreachable"
+        kernel_version: "unreachable"
   when:
     - ansible_cmdb_report_uname
     - ansible_cmdb_report_tmp_uname_cmd.stdout is not defined
