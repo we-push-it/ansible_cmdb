@@ -85,6 +85,10 @@ ansible_cmdb_css_font_color: "#e6edf3"
 
 All settings can be found in [defaults/main.yaml](defaults/main.yaml)
 
+## Custom Plugins
+
+Create your own ideas and store your custom plugins in tasks/reports/custom_reports
+
 # Contribute
 
 Help us! Send issues and contribute your ideas.
