@@ -1,6 +1,6 @@
 # ansible_cmdb
 
-Ansible Module to create a CMDB Table view of all your hosts in inventory
+Ansible role to create a CMDB Table view of all your hosts in inventory
 
  - can be used with every webserver
  - really simple js, html and css
