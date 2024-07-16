@@ -437,7 +437,6 @@
 
             $('select').each(function () {
                 var searchText = $(this).val().toLowerCase();
-                console.log(searchText);
                 var column = $(this).attr('id');
 
                 if (searchText !== '' && searchText !== 'All') filter.push({column, searchText})
@@ -453,37 +452,26 @@
                     let key2 = Object.keys(item2);
                     item2[key2[0]].forEach(function (item3) {
                         Object.keys(item3).forEach(function (key) {
-
                             filter.forEach(function (item2) {
-
                                 let searchValue = item2.searchText;
-
                                 let columnContent = item3[key];
-
-                                // if (item2.column === 'Distribution') {
-                                //     const match = columnContent.toString().toLowerCase().match(/<span\s+class='value'>(.*?)<\/span>/);
-                                //     if (match) {
-                                //         columnContent = match[1];
-                                //     }
-                                // }
                                 if (item2.column.includes('.' + key)) {
-                                    console.log(key)
-
-                                    if (Array.isArray(columnContent)) columnContent = columnContent.join(',');
-                                    console.log(columnContent)
-
-                                    console.log(searchValue)
-                                    if (!columnContent.toString().toLowerCase().includes(searchValue)) {
-                                        doFilter = false;
+                                    try {
+                                        let regex = new RegExp(searchValue, 'i'); // 'i' for case-insensitive search
+                                        if (Array.isArray(columnContent)) columnContent = columnContent.join(',');
+                                        if (!regex.test(columnContent)) {
+                                            doFilter = false;
+                                        }
+                                    } catch (error) {
+                                        // Handle invalid regular expression
+                                        console.error('Invalid regular expression:', error.message);
                                     }
                                 }
-                            })
-
-                        })
+                            });
+                        });
                     });
                 });
                 return doFilter;
-
             });
 
             var $paragraph = $('<p>' + filteredData.length + '</p>');
