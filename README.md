@@ -89,6 +89,10 @@ All settings can be found in [defaults/main.yaml](defaults/main.yaml)
 
 Create your own ideas and store your custom plugins in tasks/reports/custom_reports
 
+## ansible-lint
+
+Role passes the ansible-lint production profile with 0 errors.
+
 # Contribute
 
 Help us! Send issues and contribute your ideas.
