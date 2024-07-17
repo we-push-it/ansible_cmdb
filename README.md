@@ -1,29 +1,32 @@
 # ansible_cmdb
 
-Ansible role to create a CMDB Table view of all your hosts in inventory
+An Ansible role designed to create a CMDB (Configuration Management Database) table view of all your hosts in the inventory.
 
- - can be used with every webserver
- - really simple js, html and css
- - infos stored in json and html files
+## Features
+
+- **Compatibility**: Works seamlessly with any web server.
+- **Simple Design**: Utilizes basic JS, HTML, and CSS.
+- **Data Storage**: Stores information in JSON and HTML files for easy access and management.
 
 ## Overview
 
 ![screenshot](docs/assets/overview.png)
 
- - Sortable list
- - search via regex
- - full customizable
- - show of unreachable servers
+- **Sortable List**: Easily sort your data to find what you need quickly.
+- **Regex Search**: Powerful search functionality using regular expressions.
+- **Customizable**: Fully adaptable to suit your specific requirements.
+- **Error Handling**: Displays information about unreachable servers for better troubleshooting.
 
-## Detailview
+
+## Detailed View
 
 ![screenshot](docs/assets/detailview.png)
 
-Detail page for every server with all grabbed informations.
+Provides a detailed page for each server with comprehensive information.
 
 ## Usage
 
-Role can be simply included from ansible playbook
+Include the role in your Ansible playbook:
 
 ```yaml
 ---
@@ -35,7 +38,7 @@ Role can be simply included from ansible playbook
     - ansible_cmdb
 ```
 
-and configured in inventory, for example:
+Configure settings in your inventory file:
 
 ```yaml
 ansible_cmdb_webserver_hostname: localhost  # used to delegate the tasks
@@ -47,7 +50,7 @@ ansible_cmdb_webserver_mode_files: '0644'
 ansible_cmdb_webserver_mode_folder: '0755'
 ```
 
-Reports can be enabled or disabled
+Enable or disable specific reports:
 
 ```yaml
 # reports
@@ -59,7 +62,7 @@ ansible_cmdb_report_tmout: true
 ansible_cmdb_report_uname: true
 ```
 
-HTML Overview columns can be rearranged, columns can be activated or deactivated
+Customize HTML overview columns:
 
 ```yaml
 ansible_cmdb_columns:
@@ -76,7 +79,7 @@ ansible_cmdb_columns:
   - tmout.tmout
 ```
 
-Colors can be set via variable
+Set custom colors:
 
 ```yaml
 ansible_cmdb_css_background_color: "#010409"
@@ -87,12 +90,12 @@ All settings can be found in [defaults/main.yaml](defaults/main.yaml)
 
 ## Custom Plugins
 
-Create your own ideas and store your custom plugins in tasks/reports/custom_reports
+Store custom plugins in tasks/reports/custom_reports
 
-## ansible-lint
+## Compliance
 
-Role passes the ansible-lint production profile with 0 errors.
+This role passes the ansible-lint production profile with zero errors.
 
 # Contribute
 
-Help us! Send issues and contribute your ideas.
+We welcome contributions! Please report issues and share your ideas to help us improve.
