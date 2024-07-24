@@ -455,7 +455,7 @@
                             filter.forEach(function (item2) {
                                 let searchValue = item2.searchText;
                                 let columnContent = item3[key];
-                                if (item2.column.includes('.' + key)) {
+                                if (item2.column.endsWith('.' + key)) {
                                     try {
                                         let regex = new RegExp(searchValue, 'i'); // 'i' for case-insensitive search
                                         if (Array.isArray(columnContent)) columnContent = columnContent.join(',');
